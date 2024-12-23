@@ -262,4 +262,56 @@ function openfolder {
 }
 Set-Alias fofd openfolder
 ```
+## Aliases and Functions Table
+
+### Aliases for Common Commands
+This section lists the aliases for commonly used commands.
+
+| **Alias**        | **Command**                | **Description**                                        | **Example Usage**                                                   |
+|------------------|----------------------------|--------------------------------------------------------|---------------------------------------------------------------------|
+| `posh-theme`     | `Choose-PoshTheme`         | Switch themes in Oh My Posh                            | `posh-theme` — Open the theme selection menu.                       |
+| `tt`             | `tree`                     | Display a tree of directories and files                | `tt` — Show the directory tree in the current folder.              |
+| `gnip`           | `Get-NetIPAddress`         | Get network IP address details                         | `gnip` — Display the system's IP address configuration.            |
+| `vim`            | `nvim`                     | Open Neovim editor                                     | `vim filename` — Open a file in Neovim.                            |
+| `alies`          | `Get-Alias`                | Show all defined aliases                               | `alies` — List all defined aliases.                                 |
+| `edit`           | `notepad`                  | Open Notepad                                           | `edit filename` — Open the file in Notepad.                         |
+| `pscan`          | `Test-NetConnection`       | Test network connections                               | `pscan google.com` — Test connection to google.com.                |
+
+### Functions for Extended Functionality
+This section lists functions that extend the functionality of PowerShell with custom commands.
+
+| **Function**     | **Command**                          | **Description**                                        | **Example Usage**                                                   |
+|------------------|--------------------------------------|--------------------------------------------------------|---------------------------------------------------------------------|
+| `getip`          | `Get-NetIPAddress | Where-Object { $_.AddressFamily -eq 'IPv4' }` | Get IPv4 address information                           | `getip` — Display all IPv4 addresses.                               |
+| `ll`             | `Get-ChildItem -Force | Sort-Object Name` | List files and directories, including hidden ones     | `ll` — List files in the current directory, including hidden files.|
+| `lsr`            | `Get-ChildItem -Recurse -Force`      | List files and directories recursively                 | `lsr` — List all files and directories recursively.                |
+| `gs`             | `Get-Service`                        | Get all running services                               | `gs` — Display all active services.                                 |
+| `md`             | `New-Item -ItemType Directory`       | Create a new directory                                 | `md new_folder` — Create a new directory called `new_folder`.       |
+| `netinfo`        | `Get-NetAdapter | Select-Object Name, Status, MacAddress, LinkSpeed` | Display network adapter information            | `netinfo` — Display network adapter details.                       |
+| `pingtest`       | `Test-Connection -Count 4`           | Ping a host to test connectivity                       | `pingtest` — Ping a host (default 4 pings).                        |
+| `ports`          | `Get-NetTCPConnection`               | Show all TCP connections                               | `ports` — Display current TCP connections.                         |
+| `size`           | `Get-ChildItem -Recurse | Measure-Object -Property Length -Sum` | Get total file size in a directory                  | `size` — Display total file size of all files recursively.         |
+| `tree`           | `Get-ChildItem -Recurse -Force`      | Display a directory tree                               | `tree` — Show a directory tree including subdirectories.           |
+| `listusers`      | `Get-LocalUser`                      | List all local users                                   | `listusers` — Display all local users on the system.               |
+| `groups`         | `Get-LocalGroupMember -Group "Administrators"` | List members of the "Administrators" group  | `groups` — List members of the "Administrators" group.             |
+| `clsrv`          | `Clear-DnsClientCache`              | Clear DNS client cache                                 | `clsrv` — Clear the DNS client cache.                              |
+| `cpuinfo`        | `Get-WmiObject Win32_Processor`     | Display CPU information                                | `cpuinfo` — Show details of the system's processor.                |
+| `raminfo`        | `Get-WmiObject Win32_PhysicalMemory` | Display RAM information                                | `raminfo` — Display details of installed memory.                   |
+| `sysinfo`        | `Get-ComputerInfo`                  | Display system information                             | `sysinfo` — Display system info like OS version and architecture.  |
+
+### Fuzzy Search Functions
+This section lists functions related to fuzzy searching files and directories.
+
+| **Function**     | **Command**                          | **Description**                                        | **Example Usage**                                                   |
+|------------------|--------------------------------------|--------------------------------------------------------|---------------------------------------------------------------------|
+| `search`         | `Get-ChildItem -Path C:\ -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | Fuzzy search for files in the system.                     | `search` — Interactive search for files on your system.           |
+| `fuzzysearch`    | `fzf --preview="type {}"`            | Fuzzy search with preview of file content              | `fuzzysearch` — Search for files and preview their content.        |
+| `fuzzydirs`      | `Get-ChildItem -Path C:\ -Recurse -Directory -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName }` | Fuzzy search for directories in the system.              | `fuzzydirs` — Search for directories interactively.               |
+| `fuzzyext`       | `Get-ChildItem -Path C:\ -Recurse -File -Include $ext -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName }` | Fuzzy search for files with a specific extension.             | `fuzzyext *.txt` — Search for `.txt` files interactively.          |
+| `searchpreview`  | `fzf --preview="if ($env:OS -eq 'Windows_NT') { type {} | Out-String } else { cat {} }"` | Fuzzy search with a preview of file content (cross-platform) | `searchpreview` — Search for files and preview their content.     |
+| `copyfilepath`   | `Set-Clipboard`                      | Copy selected file path to clipboard                   | `copyfilepath` — Copy the file path of a selected file to clipboard.|
+| `recentfiles`    | `Get-ChildItem -Path C:\ -Recurse -File -ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTime -ge (Get-Date).AddDays(-$days) }` | Search for recently modified files | `recentfiles 7` — Search for files modified in the last 7 days.    |
+| `searchtext`     | `rg --files-with-matches $query`     | Search for text inside files                           | `searchtext "search_term"` — Search for text within files.        |
+| `openfolder`     | `Start-Process explorer`             | Open selected folder in File Explorer                  | `openfolder` — Open a folder in File Explorer interactively.      |
+
 
