@@ -39,37 +39,95 @@ function Set-PoshTheme {
 # Menu to switch themes dynamically with fuzzy search
 function Choose-PoshTheme {
     $themes = @(
-        "jandedobbeleer",
-        "chips",
-        "dracula",
-        "if_tea",
-        "sonicboom_dark",
-        "atomic",
-        "blue-owl",
-        "bubbles",
-        "devious-diamonds",
-        "cloud-native-azure",
-        "jandedobbeleer",
-        "mario",
-        "powerline",
-        "paradox",
-        "pure",
-        "snowy-night",
-        "tango",
-        "vscode",
-        "powerline-v2",
-        "crystal",
-        "horizon",
-        "sphinx",
-        "old-skool",
-        "seabird",
-        "new-age",
-        "macchiato",
-        "react",
-        "dracula-dark",
-        "frodo",
-        "night-owl"
-    )
+    "jandedobbeleer",
+    "chips",
+    "dracula",
+    "if_tea",
+    "sonicboom_dark",
+    "atomic",
+    "blue-owl",
+    "bubbles",
+    "devious-diamonds",
+    "cloud-native-azure",
+    "mario",
+    "powerline",
+    "paradox",
+    "pure",
+    "snowy-night",
+    "tango",
+    "vscode",
+    "powerline-v2",
+    "crystal",
+    "horizon",
+    "sphinx",
+    "old-skool",
+    "seabird",
+    "new-age",
+    "macchiato",
+    "react",
+    "dracula-dark",
+    "frodo",
+    "night-owl",
+    "1_shell",
+    "agnoster.minimal",
+    "agnoster",
+    "agnosterplus",
+    "aliens",
+    "amro",
+    "atomicBit",
+    "avit",
+    "blueish",
+    "bubblesextra",
+    "bubblesline",
+    "capr4n",
+    "catppuccin_frappe",
+    "catppuccin_latte",
+    "catppuccin_macchiato",
+    "catppuccin_mocha",
+    "catppuccin",
+    "cert",
+    "cinnamon",
+    "clean-detailed",
+    "cloud-context",
+    "cobalt2",
+    "craver",
+    "darkblood",
+    "di4am0nd",
+    "easy-term",
+    "emodipt-extend",
+    "emodipt",
+    "fish",
+    "free-ukraine",
+    "froczh",
+    "gmay",
+    "grandpa-style",
+    "gruvbox",
+    "half-life",
+    "honukai",
+    "hotstick.minimal",
+    "hul10",
+    "hunk",
+    "huvix",
+    "illusi0n",
+    "iterm2",
+    "jblab_2021",
+    "jonnychipz",
+    "json",
+    "jtracey93",
+    "jv_sitecorian",
+    "kali",
+    "kushal",
+    "lambda",
+    "lambdageneration",
+    "larserikfinholt",
+    "lightgreen",
+    "M365Princess",
+    "marcduiker",
+    "markbull",
+    "material",
+    "microverse-power",
+    "mojada"
+)
 
     Write-Host "Available Themes:" -ForegroundColor Cyan
     $themes | fzf --preview 'echo {}' --preview-window=up:20 | ForEach-Object {
@@ -107,54 +165,51 @@ Function cpuinfo { Get-WmiObject Win32_Processor | Select-Object Name, NumberOfC
 Function raminfo { Get-WmiObject Win32_PhysicalMemory | Select-Object Manufacturer, Capacity, Speed }
 Function sysinfo { Get-ComputerInfo | Select-Object CsName, WindowsVersion, OsArchitecture, CsManufacturer, CsModel }
 
-#seach using Fuzzy finder
+# Search using Fuzzy finder
 function search {
-    Get-ChildItem -Path C:\ -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | fzf
+    Get-ChildItem -Path C:\,D:\ -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | fzf
 }
 
-
 function fuzzysearch {
-    Get-ChildItem -Path C:\ -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | fzf --preview="type {}"
+    Get-ChildItem -Path C:\,D:\ -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | fzf --preview="type {}"
 }
 Set-Alias fs fuzzysearch
 
 function fuzzydirs {
-    Get-ChildItem -Path C:\ -Recurse -Directory -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | fzf
+    Get-ChildItem -Path C:\,D:\ -Recurse -Directory -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | fzf
 }
 Set-Alias fd fuzzydirs
+
 function fuzzyext {
     param (
         [string]$ext = "*.txt"
     )
-    Get-ChildItem -Path C:\ -Recurse -File -Include $ext -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | fzf
+    Get-ChildItem -Path C:\,D:\ -Recurse -File -Include $ext -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | fzf
 }
 Set-Alias fx fuzzyext
 
 function openfile {
-    Get-ChildItem -Path C:\ -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | fzf | ForEach-Object { notepad $_ }
+    Get-ChildItem -Path C:\,D:\ -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | fzf | ForEach-Object { notepad $_ }
 }
-Set-Alias of openfile
-
+Set-Alias fof openfile
 
 function searchpreview {
-    Get-ChildItem -Path C:\ -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | fzf --preview="if ($env:OS -eq 'Windows_NT') { type {} | Out-String } else { cat {} }"
+    Get-ChildItem -Path C:\,D:\ -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | fzf --preview="if ($env:OS -eq 'Windows_NT') { type {} | Out-String } else { cat {} }"
 }
 Set-Alias fsp searchpreview
 
 function copyfilepath {
-    Get-ChildItem -Path C:\ -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | fzf | Set-Clipboard
+    Get-ChildItem -Path C:\,D:\ -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | fzf | Set-Clipboard
 }
 Set-Alias fcfp copyfilepath
-
 
 function recentfiles {
     param (
         [int]$days = 7
     )
-    Get-ChildItem -Path C:\ -Recurse -File -ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTime -ge (Get-Date).AddDays(-$days) } | ForEach-Object { $_.FullName } | fzf
+    Get-ChildItem -Path C:\,D:\ -Recurse -File -ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTime -ge (Get-Date).AddDays(-$days) } | ForEach-Object { $_.FullName } | fzf
 }
 Set-Alias frf recentfiles
-
 
 function searchtext {
     param (
@@ -164,8 +219,68 @@ function searchtext {
 }
 Set-Alias fst searchtext
 
-
 function openfolder {
-    Get-ChildItem -Path C:\ -Recurse -Directory -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | fzf | ForEach-Object { Start-Process explorer $_ }
+    Get-ChildItem -Path C:\,D:\ -Recurse -Directory -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | fzf | ForEach-Object { Start-Process explorer $_ }
 }
 Set-Alias fofd openfolder
+
+function open {
+    param (
+        [string]$path = "C:\,D:\",  # Default search path
+        [switch]$o,                # Open the selected file or directory
+        [switch]$p                 # Display the selected path
+    )
+
+    # Determine if the path is a file or directory
+    if (Test-Path -Path $path -PathType Leaf) {
+        if ($o) {
+            # Open the file in nvim
+            nvim $path
+        } elseif ($p) {
+            # Output the file path
+            Write-Output $path
+        }
+    } elseif (Test-Path -Path $path -PathType Container) {
+        # If it's a directory, allow selection of files/directories
+        $selection = Get-ChildItem -Path $path -Recurse -Force -ErrorAction SilentlyContinue | 
+            ForEach-Object { $_.FullName } | 
+            fzf --preview="if (Test-Path -PathType Leaf) { type {} } else { 'Directory: ' + $_ }"
+
+        if ($selection) {
+            if ($o) {
+                if (Test-Path -Path $selection -PathType Leaf) {
+                    # Open file in nvim
+                    nvim $selection
+                } elseif (Test-Path -Path $selection -PathType Container) {
+                    # Open directory in Explorer
+                    Start-Process explorer $selection
+                }
+            } elseif ($p) {
+                # Output the selected path
+                Write-Output $selection
+            }
+        }
+    } else {
+        # Default behavior: search in C:\ and D:\
+        $selection = Get-ChildItem -Path C:\,D:\ -Recurse -Force -ErrorAction SilentlyContinue | 
+            ForEach-Object { $_.FullName } | 
+            fzf --preview="if (Test-Path -PathType Leaf) { type {} } else { 'Directory: ' + $_ }"
+
+        if ($selection) {
+            if ($o) {
+                if (Test-Path -Path $selection -PathType Leaf) {
+                    # Open file in nvim
+                    nvim $selection
+                } elseif (Test-Path -Path $selection -PathType Container) {
+                    # Open directory in Explorer
+                    Start-Process explorer $selection
+                }
+            } elseif ($p) {
+                # Output the selected path
+                Write-Output $selection
+            }
+        }
+    }
+}
+
+
