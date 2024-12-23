@@ -15,3 +15,12 @@ oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-
 # oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\blue-owl.omp.json' | Invoke-Expression
 # oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\bubbles.omp.json' | Invoke-Expression
 # oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\devious-diamonds.omp.json' | Invoke-Expression
+
+
+# Import functionality
+Import-Module PSFzf
+Import-Module PSWindowsUpdate
+# Import-Module PSColor
+Import-Module PSReadLine
+Set-PSReadLineOption -PredictionSource History
+Import-Module -Name Terminal-Icons
