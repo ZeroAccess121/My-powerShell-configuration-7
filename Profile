@@ -11,6 +11,7 @@ oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-
 # oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\blue-owl.omp.json' | Invoke-Expression
 # oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\bubbles.omp.json' | Invoke-Expression
 # oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\devious-diamonds.omp.json' | Invoke-Expression
+# Simulate pressing F2 on terminal start
 
 # Import functionality
 Import-Module PSFzf
@@ -21,9 +22,7 @@ Set-PSReadLineOption -PredictionSource History
 Import-Module -Name Terminal-Icons
 Import-Module PSGitHub
 
-
-
-# Define a function to switch themes dynamically
+ #Define a function to switch themes dynamically
 function Set-PoshTheme {
     param (
         [Parameter(Mandatory)]
@@ -174,7 +173,7 @@ Function netinfo { Get-NetAdapter | Select-Object Name, Status, MacAddress, Link
 Function pingtest { Test-Connection -Count 4 }
 Function ports { Get-NetTCPConnection | Select-Object LocalAddress, LocalPort, RemoteAddress, RemotePort, State }
 Function size { Get-ChildItem -Recurse | Measure-Object -Property Length -Sum | Select-Object Count, Sum }
-Function tree { Get-ChildItem -Recurse -Force | Format-Table FullName, Attributes }
+# Function tree { Get-ChildItem -Recurse -Force | Format-Table FullName, Attributes }
 Function listusers { Get-LocalUser }
 Function groups { Get-LocalGroupMember -Group "Administrators" }
 Function clsrv { Clear-DnsClientCache }
@@ -189,28 +188,62 @@ Set-Alias disk check-disk
 # Function for general search
 function search {
     param (
-        [string]$path = "C:\,D:\" # Default search paths
+        [string]$path = ""  # Default empty path for searching all drives
     )
-    $searchPaths = $path -split "," # Handle multiple paths if provided as a comma-separated list
+    
+    # If no path is provided, search all drives
+    if (-not $path) {
+        $searchPaths = Get-PSDrive -PSProvider FileSystem | ForEach-Object { $_.Root }
+    } else {
+        # If a path is provided, use it
+        $searchPaths = $path -split ","
+    }
+
+    # Search recursively in the specified or all paths and pipe results to fzf
     Get-ChildItem -Path $searchPaths -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | fzf
 }
 
-# Function for fuzzy search with preview
-function fuzzysearch {
+
+function open {
     param (
-        [string]$path = "C:\,D:\" # Default search paths
+        [string]$path = ""  # Default to search all drives if no path is passed
     )
-    $searchPaths = $path -split ","
-    Get-ChildItem -Path $searchPaths -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | fzf --preview="type {}"
+    
+    # Automatically detect all drives if no path is specified
+    if (-not $path) {
+        $searchPaths = Get-PSDrive -PSProvider FileSystem | ForEach-Object { $_.Root }
+    } else {
+        $searchPaths = $path -split ","
+    }
+
+    # Search recursively for all files in the provided path(s)
+    $selection = Get-ChildItem -Path $searchPaths -Recurse -File -ErrorAction SilentlyContinue | 
+        ForEach-Object { $_.FullName } | 
+        fzf
+
+    # If a file is selected, open it in nvim
+    if ($selection) {
+        nvim $selection
+    } else {
+        Write-Host "No file selected." -ForegroundColor Red
+    }
 }
-Set-Alias fs fuzzysearch
+
+
 
 # Function for fuzzy search for directories
 function fuzzydirs {
     param (
-        [string]$path = "C:\,D:\" # Default search paths
+        [string]$path = "" # Default to search all drives if no path is passed
     )
-    $searchPaths = $path -split ","
+    
+    # Automatically detect all drives if no path is specified
+    if (-not $path) {
+        $searchPaths = Get-PSDrive -PSProvider FileSystem | ForEach-Object { $_.Root }
+    } else {
+        $searchPaths = $path -split ","
+    }
+
     Get-ChildItem -Path $searchPaths -Recurse -Directory -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | fzf
 }
 Set-Alias fd fuzzydirs
@@ -219,9 +252,16 @@ Set-Alias fd fuzzydirs
 function fuzzyext {
     param (
         [string]$ext = "*.txt",   # Default file extension
-        [string]$path = "C:\,D:\" # Default search paths
+        [string]$path = ""         # Default to search all drives if no path is passed
     )
-    $searchPaths = $path -split ","
+    
+    # Automatically detect all drives if no path is specified
+    if (-not $path) {
+        $searchPaths = Get-PSDrive -PSProvider FileSystem | ForEach-Object { $_.Root }
+    } else {
+        $searchPaths = $path -split ","
+    }
+
     Get-ChildItem -Path $searchPaths -Recurse -File -Include $ext -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | fzf
 }
 Set-Alias fx fuzzyext
@@ -229,9 +269,16 @@ Set-Alias fx fuzzyext
 # Function for opening a file
 function openfile {
     param (
-        [string]$path = "C:\,D:\" # Default search paths
+        [string]$path = "" # Default to search all drives if no path is passed
     )
-    $searchPaths = $path -split ","
+    
+    # Automatically detect all drives if no path is specified
+    if (-not $path) {
+        $searchPaths = Get-PSDrive -PSProvider FileSystem | ForEach-Object { $_.Root }
+    } else {
+        $searchPaths = $path -split ","
+    }
+
     Get-ChildItem -Path $searchPaths -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | fzf | ForEach-Object { code $_ }
 }
 Set-Alias fof openfile
@@ -239,112 +286,129 @@ Set-Alias fof openfile
 # Function for search with preview
 function searchpreview {
     param (
-        [string]$path = "C:\,D:\" # Default search paths
+        [string]$path = "" # Default to search all drives if no path is passed
     )
-    $searchPaths = $path -split ","
+    
+    # Automatically detect all drives if no path is specified
+    if (-not $path) {
+        $searchPaths = Get-PSDrive -PSProvider FileSystem | ForEach-Object { $_.Root }
+    } else {
+        $searchPaths = $path -split ","
+    }
+
     Get-ChildItem -Path $searchPaths -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | fzf --preview="if ($env:OS -eq 'Windows_NT') { type {} | Out-String } else { cat {} }"
 }
 Set-Alias fsp searchpreview
 
-# Function to copy file paths
+# Function to copy file paths (your custom function)
 function copyfilepath {
     param (
-        [string]$path = "C:\,D:\" # Default search paths
+        [string]$path = "" # Default to search all drives if no path is passed
     )
-    $searchPaths = $path -split ","
-    Get-ChildItem -Path $searchPaths -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | fzf | Set-Clipboard
+    
+    # Automatically detect all drives if no path is specified
+    if (-not $path) {
+        $searchPaths = Get-PSDrive -PSProvider FileSystem | ForEach-Object { $_.Root }
+    } else {
+        $searchPaths = $path -split ","
+    }
+
+    Get-ChildItem -Path $searchPaths -Recurse -File -ErrorAction SilentlyContinue | 
+        ForEach-Object { $_.FullName } | 
+        fzf | Set-Clipboard
 }
+
+# Set alias for the function
 Set-Alias fcfp copyfilepath
+
+# Bind Ctrl + H to run the fcfp function (copy file path)
+Set-PSReadlineKeyHandler -Key Ctrl+h -ScriptBlock {
+    fcfp
+}
 
 # Function for recent files
 function recentfiles {
     param (
         [int]$days = 7,           # Default days
-        [string]$path = "C:\,D:\" # Default search paths
+        [string]$path = ""         # Default to search all drives if no path is passed
     )
-    $searchPaths = $path -split ","
+    
+    # Automatically detect all drives if no path is specified
+    if (-not $path) {
+        $searchPaths = Get-PSDrive -PSProvider FileSystem | ForEach-Object { $_.Root }
+    } else {
+        $searchPaths = $path -split ","
+    }
+
     Get-ChildItem -Path $searchPaths -Recurse -File -ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTime -ge (Get-Date).AddDays(-$days) } | ForEach-Object { $_.FullName } | fzf
 }
 Set-Alias frf recentfiles
 
 # Function for searching text using ripgrep
-function searchtext {
+function open {
     param (
-        [string]$query,
-        [string]$path = "C:\,D:\" # Default search paths
+        [string]$path = ""  # Default to search all drives if no path is passed
     )
-    rg --files-with-matches $query $path | fzf
+
+    # Automatically detect all drives if no path is specified
+    if (-not $path) {
+        $path = (Get-PSDrive -PSProvider FileSystem | ForEach-Object { $_.Root }) -join ","
+    }
+
+    # Search recursively for all files in the provided path(s)
+    $selection = Get-ChildItem -Path $path -Recurse -File -ErrorAction SilentlyContinue | 
+        ForEach-Object { $_.FullName } | 
+        fzf
+
+    # If a file is selected, open it in nvim
+    if ($selection) {
+        nvim $selection
+    } else {
+        Write-Host "No file selected." -ForegroundColor Red
+    }
 }
-Set-Alias fst searchtext
 
 # Function to open folders
 function openfolder {
     param (
-        [string]$path = "C:\,D:\" # Default search paths
+        [string]$path = "" # Default to search all drives if no path is passed
     )
-    $searchPaths = $path -split ","
+    
+    # Automatically detect all drives if no path is specified
+    if (-not $path) {
+        $searchPaths = Get-PSDrive -PSProvider FileSystem | ForEach-Object { $_.Root }
+    } else {
+        $searchPaths = $path -split ","
+    }
+
     Get-ChildItem -Path $searchPaths -Recurse -Directory -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | fzf | ForEach-Object { Start-Process explorer $_ }
 }
 Set-Alias fofd openfolder
 
 function open {
     param (
-        [string]$path = "C:\,D:\",  # Default search path
-        [switch]$o,                 # Open the selected file or directory
-        [switch]$p                  # Display the selected path
+        [string]$path = "C:\"  # Default search path (can be overridden by user)
     )
 
-    # Determine if the path is a file or directory
-    if (Test-Path -Path $path -PathType Leaf) {
-        if ($o) {
-            # Open the file in nvim
-            nvim $path
-        } elseif ($p) {
-            # Output the file path
-            Write-Output $path
-        }
-    } elseif (Test-Path -Path $path -PathType Container) {
-        # If it's a directory, allow selection of files/directories without preview
-        $selection = Get-ChildItem -Path $path -Recurse -Force -ErrorAction SilentlyContinue | 
-            ForEach-Object { $_.FullName } | 
-            fzf
+    # Check if the path exists
+    if (-not (Test-Path -Path $path)) {
+        Write-Host "Path '$path' does not exist!" -ForegroundColor Red
+        return
+    }
 
-        if ($selection) {
-            if ($o) {
-                if (Test-Path -Path $selection -PathType Leaf) {
-                    # Open file in nvim
-                    nvim $selection
-                } elseif (Test-Path -Path $selection -PathType Container) {
-                    # Open directory in Explorer
-                    Start-Process explorer $selection
-                }
-            } elseif ($p) {
-                # Output the selected path
-                Write-Output $selection
-            }
-        }
+    # Search recursively for all files in the provided path
+    $selection = Get-ChildItem -Path $path -Recurse -File -ErrorAction SilentlyContinue | 
+        ForEach-Object { $_.FullName } | 
+        fzf --preview 'powershell -Command "Get-Content {} | Select-Object -First 20"'
+
+    # If a file is selected, open it in nvim
+    if ($selection) {
+        nvim $selection
     } else {
-        # Default behavior: search in C:\ and D:\ if no valid path is specified
-        $selection = Get-ChildItem -Path C:\,D:\ -Recurse -Force -ErrorAction SilentlyContinue | 
-            ForEach-Object { $_.FullName } | 
-            fzf
-
-        if ($selection) {
-            if ($o) {
-                if (Test-Path -Path $selection -PathType Leaf) {
-                    # Open file in nvim
-                    nvim $selection
-                } elseif (Test-Path -Path $selection -PathType Container) {
-                    # Open directory in Explorer
-                    Start-Process explorer $selection
-                }
-            } elseif ($p) {
-                # Output the selected path
-                Write-Output $selection
-            }
-        }
+        Write-Host "No file selected." -ForegroundColor Red
     }
 }
+
 
 
 
@@ -389,14 +453,73 @@ function run-cpp {
     param (
         [string]$file
     )
+
+    # Ensure the input file exists and has a valid extension
+    if (-Not (Test-Path -Path $file)) {
+        Write-Error "File '$file' does not exist."
+        return
+    }
+
+    if ([System.IO.Path]::GetExtension($file) -ne ".cpp") {
+        Write-Error "File '$file' is not a .cpp file."
+        return
+    }
+
+    # Get the main file name (without extension) and its directory
     $filename = [System.IO.Path]::GetFileNameWithoutExtension($file)
     $dir = [System.IO.Path]::GetDirectoryName((Get-Item -Path $file).FullName)
+
+    # Collect all .cpp files in the directory
     $cppFiles = Get-ChildItem -Path $dir -Filter "*.cpp" | ForEach-Object { $_.FullName }
-    g++ $cppFiles -o "$filename.exe" && & ".\$filename.exe"
+
+    # Ensure there are .cpp files to compile
+    if ($cppFiles.Count -eq 0) {
+        Write-Error "No .cpp files found in the directory."
+        return
+    }
+
+    # Prioritize the main file in the compilation order
+    $mainFile = (Get-Item -Path $file).FullName
+    $compileFiles = @($mainFile) + ($cppFiles | Where-Object { $_ -ne $mainFile })
+
+    # Initialize an array for missing headers
+    $missingHeaders = @()
+
+    # Check for `#include` directives in all source files
+    foreach ($sourceFile in $compileFiles) {
+        Get-Content -Path $sourceFile | ForEach-Object {
+            if ($_ -match '^\s*#include\s+"(.*?)"') {
+                $headerFile = $Matches[1]
+                $headerPath = Join-Path $dir $headerFile
+                if (-Not (Test-Path -Path $headerPath)) {
+                    $missingHeaders += $headerFile
+                }
+            }
+        }
+    }
+
+    # If missing headers are detected, display an error
+    if ($missingHeaders.Count -gt 0) {
+        $missingHeaders = $missingHeaders | Sort-Object -Unique
+        Write-Error "Missing header files: $($missingHeaders -join ', ')"
+        return
+    }
+
+    # Compile using g++ and run the output
+    try {
+        g++ $compileFiles -o "$filename.exe"
+        if ($LASTEXITCODE -eq 0) {
+            & ".\$filename.exe"
+        } else {
+            Write-Error "Compilation failed. Please check your code for errors."
+        }
+    } catch {
+        Write-Error "An error occurred during compilation or execution: $_"
+    }
 }
+
+# Set an alias for easier usage
 Set-Alias rcpp run-cpp
-
-
 
 
 
@@ -423,12 +546,32 @@ function cleanCompiledFiles {
     Get-ChildItem -Path . -Include *.class,*.exe,*.obj,*.o,*.pyc -Recurse | Remove-Item -Force
 }
 
-
-# admin
-function run-admin {
-    param (
-        [string]$script
-    )
-    Start-Process powershell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File $script" -Verb RunAs
+function networkTools{
+     python "D:\VS code\python\networkTools.py"
 }
+
+# this function is to show all history since downloading Windows
+Function Get-HistoryFuzzy {
+    Get-Content $env:APPDATA\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt | fzf
+}
+
+
+
+
+
+
+Function Show-AsciiArt {
+    $art = @"
+  █████╗ ███╗   ███╗██████╗ 
+ ██╔══██╗████╗ ████║██╔══██╗
+ ███████║██╔████╔██║██████╔╝
+ ██╔══██║██║╚██╔╝██║██╔══██╗
+ ██║  ██║██║ ╚═╝ ██║██║  ██║
+ ╚═╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝
+"@
+    Write-Host $art -ForegroundColor Cyan
+}
+
+# Call the function
+Show-AsciiArt
 
