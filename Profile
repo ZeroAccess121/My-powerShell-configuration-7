@@ -36,7 +36,7 @@ function Set-PoshTheme {
         Write-Host "Theme '$Theme' not found!" -ForegroundColor Red
     }
 }
-
+#
 # Menu to switch themes dynamically with fuzzy search
 function Choose-PoshTheme {
     $themes = @(
