@@ -13,7 +13,7 @@ oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-
 # oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\devious-diamonds.omp.json' | Invoke-Expression
 # Simulate pressing F2 on terminal start
 
-Import functionality
+# Import functionality
 Import-Module PSFzf
 Import-Module PSWindowsUpdate
 # Import-Module PSColor
@@ -36,7 +36,7 @@ function Set-PoshTheme {
         Write-Host "Theme '$Theme' not found!" -ForegroundColor Red
     }
 }
-#
+
 # Menu to switch themes dynamically with fuzzy search
 function Choose-PoshTheme {
     $themes = @(
@@ -141,7 +141,7 @@ function Choose-PoshTheme {
 
 # Aliases for common commands
 Set-Alias posh-theme Choose-PoshTheme
-Set-Alias tt tree
+#Set-Alias tt tree
 Set-Alias gnip Get-NetIPAddress
 Set-Alias vim nvim
 Set-Alias alies Get-Alias
@@ -169,6 +169,39 @@ Function ll { Get-ChildItem -Force | Sort-Object Name }
 Function lsr { Get-ChildItem -Recurse -Force }
 Function gs { Get-Service }
 Function md { New-Item -ItemType Directory }
+# Function to delete a file or directory with options for -r, -f, or -rf
+function rm {
+    param (
+        [Parameter(Mandatory=$true)]
+        [string]$Path,
+        
+        [switch]$r,   # -r flag for recursive
+        [switch]$f,   # -f flag for force
+        [switch]$rf   # -rf flag for recursive and force (combined)
+    )
+    
+    # If -rf is specified, set both -r and -f
+    if ($rf) {
+        $r = $true
+        $f = $true
+    }
+
+    # Determine the flags to apply
+    $force = $false
+    $recurse = $false
+    
+    if ($f) {
+        $force = $true
+    }
+    if ($r) {
+        $recurse = $true
+    }
+
+    # Force remove the item, handling read-only, hidden, and system files
+    Remove-Item -Path $Path -Recurse:$recurse -Force:$force
+}
+
+
 Function netinfo { Get-NetAdapter | Select-Object Name, Status, MacAddress, LinkSpeed }
 Function pingtest { Test-Connection -Count 4 }
 Function ports { Get-NetTCPConnection | Select-Object LocalAddress, LocalPort, RemoteAddress, RemotePort, State }
@@ -545,14 +578,18 @@ Set-Alias phps php-server
 function cleanCompiledFiles {
     Get-ChildItem -Path . -Include *.class,*.exe,*.obj,*.o,*.pyc -Recurse | Remove-Item -Force
 }
+# this function is to show all history since downloading Windows
+Function Get-HistoryFuzzy {
+    Get-Content $env:APPDATA\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt | fzf
+}
+
 
 function networkTools{
      python "D:\VS code\python\networkTools.py"
 }
 
-# this function is to show all history since downloading Windows
-Function Get-HistoryFuzzy {
-    Get-Content $env:APPDATA\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt | fzf
+function tsk{
+     py -3.9 "D:\VS code\python\taskmaneger.py"
 }
 
 
