@@ -166,8 +166,18 @@ function recon {
 Set-Alias nmap-scan recon
 
 # File and directory operations
-Function ll { Get-ChildItem -Force | Sort-Object Name }
-Function lsr { Get-ChildItem -Recurse -Force }
+Function ll {
+    param (
+        [string]$Path = "."
+    )
+    Get-ChildItem -Force -Path $Path | Sort-Object Name
+}
+Function lsr {
+    param (
+        [string]$Path = "."
+    )
+    Get-ChildItem -Recurse -Force -Path $Path
+}
 Function gs { Get-Service }
 Function md { New-Item -ItemType Directory }
 # Function to delete a file or directory with options for -r, -f, or -rf
