@@ -140,6 +140,10 @@ function Choose-PoshTheme {
 
 
 
+
+
+
+
 # Aliases for common commands
 Set-Alias posh-theme Choose-PoshTheme
 #Set-Alias tt tree
