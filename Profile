@@ -13,6 +13,8 @@ oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-
 # oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\devious-diamonds.omp.json' | Invoke-Expression
 # Simulate pressing F2 on terminal start
 
+$env:PATH += ";$env:USERPROFILE\.local\bin"
+
 # Import functionality
 Import-Module PSFzf
 Import-Module PSWindowsUpdate
@@ -21,7 +23,6 @@ Import-Module PSReadLine
 Set-PSReadLineOption -PredictionSource History
 Import-Module -Name Terminal-Icons
 Import-Module PSGitHub
-
  #Define a function to switch themes dynamically
 function Set-PoshTheme {
     param (
@@ -591,6 +592,18 @@ function networkTools{
 function tsk{
      py -3.9 "D:\VS code\python\taskmaneger.py"
 }
+function video_downloader{ 
+  python3 "D:\VS code\python\video_downloader.py"
+}
+
+
+
+
+
+
+
+
+
 
 
 
@@ -612,3 +625,10 @@ Function Show-AsciiArt {
 # Call the function
 Show-AsciiArt
 
+
+#f45873b3-b655-43a6-b217-97c00aa0db58 PowerToys CommandNotFound module
+
+Import-Module -Name Microsoft.WinGet.CommandNotFound
+#f45873b3-b655-43a6-b217-97c00aa0db58
+
+Set-Alias lvim 'C:\Users\Amr khaled\.local\bin\lvim.ps1'
