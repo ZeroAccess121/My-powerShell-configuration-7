@@ -38,108 +38,38 @@ function Set-PoshTheme {
     }
 }
 
-# Menu to switch themes dynamically with fuzzy search
 function Choose-PoshTheme {
     $themes = @(
-    "jandedobbeleer",
-    "chips",
-    "dracula",
-    "if_tea",
-    "sonicboom_dark",
-    "atomic",
-    "blue-owl",
-    "bubbles",
-    "devious-diamonds",
-    "cloud-native-azure",
-    "mario",
-    "powerline",
-    "paradox",
-    "pure",
-    "snowy-night",
-    "tango",
-    "vscode",
-    "powerline-v2",
-    "crystal",
-    "horizon",
-    "sphinx",
-    "old-skool",
-    "seabird",
-    "new-age",
-    "macchiato",
-    "react",
-    "dracula-dark",
-    "frodo",
-    "night-owl",
-    "1_shell",
-    "agnoster.minimal",
-    "agnoster",
-    "agnosterplus",
-    "aliens",
-    "amro",
-    "atomicBit",
-    "avit",
-    "blueish",
-    "bubblesextra",
-    "bubblesline",
-    "capr4n",
-    "catppuccin_frappe",
-    "catppuccin_latte",
-    "catppuccin_macchiato",
-    "catppuccin_mocha",
-    "catppuccin",
-    "cert",
-    "cinnamon",
-    "clean-detailed",
-    "cloud-context",
-    "cobalt2",
-    "craver",
-    "darkblood",
-    "di4am0nd",
-    "easy-term",
-    "emodipt-extend",
-    "emodipt",
-    "fish",
-    "free-ukraine",
-    "froczh",
-    "gmay",
-    "grandpa-style",
-    "gruvbox",
-    "half-life",
-    "honukai",
-    "hotstick.minimal",
-    "hul10",
-    "hunk",
-    "huvix",
-    "illusi0n",
-    "iterm2",
-    "jblab_2021",
-    "jonnychipz",
-    "json",
-    "jtracey93",
-    "jv_sitecorian",
-    "kali",
-    "kushal",
-    "lambda",
-    "lambdageneration",
-    "larserikfinholt",
-    "lightgreen",
-    "M365Princess",
-    "marcduiker",
-    "markbull",
-    "material",
-    "microverse-power",
-    "mojada"
-)
+        "jandedobbeleer", "chips", "dracula", "if_tea", "sonicboom_dark", "atomic", "blue-owl", "bubbles", 
+        "devious-diamonds", "cloud-native-azure", "mario", "powerline", "paradox", "pure", "snowy-night", 
+        "tango", "vscode", "powerline-v2", "crystal", "horizon", "sphinx", "old-skool", "seabird", "new-age", 
+        "macchiato", "react", "dracula-dark", "frodo", "night-owl", "1_shell", "agnoster.minimal", "agnoster", 
+        "agnosterplus", "aliens", "amro", "atomicBit", "avit", "blueish", "bubblesextra", "bubblesline", 
+        "capr4n", "catppuccin_frappe", "catppuccin_latte", "catppuccin_macchiato", "catppuccin_mocha", 
+        "catppuccin", "cert", "cinnamon", "clean-detailed", "cloud-context", "cobalt2", "craver", "darkblood", 
+        "di4am0nd", "easy-term", "emodipt-extend", "emodipt", "fish", "free-ukraine", "froczh", "gmay", 
+        "grandpa-style", "gruvbox", "half-life", "honukai", "hotstick.minimal", "hul10", "hunk", "huvix", 
+        "illusi0n", "iterm2", "jblab_2021", "jonnychipz", "json", "jtracey93", "jv_sitecorian", "kali", 
+        "kushal", "lambda", "lambdageneration", "larserikfinholt", "lightgreen", "M365Princess", "marcduiker", 
+        "markbull", "material", "microverse-power", "mojada"
+    )
 
-    Write-Host "Available Themes:" -ForegroundColor Cyan
-    $themes | fzf --preview 'echo {}' --preview-window=up:20 | ForEach-Object {
-        Set-PoshTheme -Theme $_
+    # ANSI styling for the header
+    $header = "`e[1;36mAvailable Themes:`e[0m"  # Bold Cyan
+    Write-Host $header
+
+    # Use fzf for fuzzy search with ANSI-colored output
+    $selectedTheme = $themes | fzf --ansi --prompt="`e[1;33mSelect a theme:`e[0m " --header=$header
+
+    if ($selectedTheme) {
+        # ANSI styling for the confirmation message
+        Write-Host "`e[1;32mApplying theme: $selectedTheme`e[0m"  # Bold Green
+        Set-PoshTheme -Theme $selectedTheme
+    } else {
+        # ANSI styling for the cancellation message
+        Write-Host "`e[1;31mNo theme selected. Exiting...`e[0m"  # Bold Red
     }
 }
-
-
-
-
 
 
 
