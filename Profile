@@ -1,18 +1,18 @@
 # Initialize Oh My Posh with Default Theme
 # Example themes already initialized (Uncomment as needed)
-# oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\json.omp.json' | Invoke-Expression
-# oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\cloud-native-azure.omp.json' | Invoke-Expression
-oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\atomicBit.omp.json' | Invoke-Expression
-# oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\chips.omp.json' | Invoke-Expression
-# oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\dracula.omp.json' | Invoke-Expression
-# oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\if_tea.omp.json' | Invoke-Expression
-# oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\sonicboom_dark.omp.json' | Invoke-Expression
-# oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\atomic.omp.json' | Invoke-Expression
-# oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\blue-owl.omp.json' | Invoke-Expression
-# oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\bubbles.omp.json' | Invoke-Expression
-# oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\devious-diamonds.omp.json' | Invoke-Expression
-# Simulate pressing F2 on terminal start
+# oh-my-posh init pwsh --config "C:\Users\$env:USERNAME\AppData\Local\Programs\oh-my-posh\themes\json.omp.json" | Invoke-Expression
+# oh-my-posh init pwsh --config "C:\Users\$env:USERNAME\AppData\Local\Programs\oh-my-posh\themes\cloud-native-azure.omp.json" | Invoke-Expression
+oh-my-posh init pwsh --config "C:\Users\$env:USERNAME\AppData\Local\Programs\oh-my-posh\themes\atomicBit.omp.json" | Invoke-Expression
+# oh-my-posh init pwsh --config "C:\Users\$env:USERNAME\AppData\Local\Programs\oh-my-posh\themes\chips.omp.json" | Invoke-Expression
+# oh-my-posh init pwsh --config "C:\Users\$env:USERNAME\AppData\Local\Programs\oh-my-posh\themes\dracula.omp.json" | Invoke-Expression
+# oh-my-posh init pwsh --config "C:\Users\$env:USERNAME\AppData\Local\Programs\oh-my-posh\themes\if_tea.omp.json" | Invoke-Expression
+# oh-my-posh init pwsh --config "C:\Users\$env:USERNAME\AppData\Local\Programs\oh-my-posh\themes\sonicboom_dark.omp.json" | Invoke-Expression
+# oh-my-posh init pwsh --config "C:\Users\$env:USERNAME\AppData\Local\Programs\oh-my-posh\themes\atomic.omp.json" | Invoke-Expression
+# oh-my-posh init pwsh --config "C:\Users\$env:USERNAME\AppData\Local\Programs\oh-my-posh\themes\blue-owl.omp.json" | Invoke-Expression
+# oh-my-posh init pwsh --config "C:\Users\$env:USERNAME\AppData\Local\Programs\oh-my-posh\themes\bubbles.omp.json" | Invoke-Expression
+# oh-my-posh init pwsh --config "C:\Users\$env:USERNAME\AppData\Local\Programs\oh-my-posh\themes\devious-diamonds.omp.json" | Invoke-Expression
 
+# Simulate pressing F2 on terminal start
 $env:PATH += ";$env:USERPROFILE\.local\bin"
 
 # Import functionality
@@ -23,13 +23,14 @@ Import-Module PSReadLine
 Set-PSReadLineOption -PredictionSource History
 Import-Module -Name Terminal-Icons
 Import-Module PSGitHub
- #Define a function to switch themes dynamically
+
+# Define a function to switch themes dynamically
 function Set-PoshTheme {
     param (
         [Parameter(Mandatory)]
         [string]$Theme
     )
-    $themePath = "C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\$Theme.omp.json"
+    $themePath = "C:\Users\$env:USERNAME\AppData\Local\Programs\oh-my-posh\themes\$Theme.omp.json"
     if (Test-Path $themePath) {
         oh-my-posh init pwsh --config $themePath | Invoke-Expression
         Write-Host "Switched to theme: $Theme" -ForegroundColor Green
@@ -575,4 +576,4 @@ Show-AsciiArt
 Import-Module -Name Microsoft.WinGet.CommandNotFound
 #f45873b3-b655-43a6-b217-97c00aa0db58
 
-Set-Alias lvim 'C:\Users\Amr khaled\.local\bin\lvim.ps1'
+Set-Alias lvim "C:\Users\$env:USERNAME\.local\bin\lvim.ps1"
