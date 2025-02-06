@@ -21,17 +21,16 @@ Oh My Posh allows you to customize the PowerShell prompt's appearance with vario
 ### Example themes already initialized (uncomment as needed):
 
 ```powershell
-# oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\json.omp.json' | Invoke-Expression
-oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\cloud-native-azure.omp.json' | Invoke-Expression
-# oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\jandedobbeleer.omp.json' | Invoke-Expression
-# oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\chips.omp.json' | Invoke-Expression
-# oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\dracula.omp.json' | Invoke-Expression
-# oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\if_tea.omp.json' | Invoke-Expression
-# oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\sonicboom_dark.omp.json' | Invoke-Expression
-# oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\atomic.omp.json' | Invoke-Expression
-# oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\blue-owl.omp.json' | Invoke-Expression
-# oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\bubbles.omp.json' | Invoke-Expression
-# oh-my-posh init pwsh --config 'C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\devious-diamonds.omp.json' | Invoke-Expression
+# oh-my-posh init pwsh --config "C:\Users\$env:USERNAME\AppData\Local\Programs\oh-my-posh\themes\json.omp.json" | Invoke-Expression
+oh-my-posh init pwsh --config "C:\Users\$env:USERNAME\AppData\Local\Programs\oh-my-posh\themes\atomicBit.omp.json" | Invoke-Expression
+# oh-my-posh init pwsh --config "C:\Users\$env:USERNAME\AppData\Local\Programs\oh-my-posh\themes\chips.omp.json" | Invoke-Expression
+# oh-my-posh init pwsh --config "C:\Users\$env:USERNAME\AppData\Local\Programs\oh-my-posh\themes\dracula.omp.json" | Invoke-Expression
+# oh-my-posh init pwsh --config "C:\Users\$env:USERNAME\AppData\Local\Programs\oh-my-posh\themes\if_tea.omp.json" | Invoke-Expression
+# oh-my-posh init pwsh --config "C:\Users\$env:USERNAME\AppData\Local\Programs\oh-my-posh\themes\sonicboom_dark.omp.json" | Invoke-Expression
+# oh-my-posh init pwsh --config "C:\Users\$env:USERNAME\AppData\Local\Programs\oh-my-posh\themes\atomic.omp.json" | Invoke-Expression
+# oh-my-posh init pwsh --config "C:\Users\$env:USERNAME\AppData\Local\Programs\oh-my-posh\themes\blue-owl.omp.json" | Invoke-Expression
+# oh-my-posh init pwsh --config "C:\Users\$env:USERNAME\AppData\Local\Programs\oh-my-posh\themes\bubbles.omp.json" | Invoke-Expression
+# oh-my-posh init pwsh --config "C:\Users\$env:USERNAME\AppData\Local\Programs\oh-my-posh\themes\devious-diamonds.omp.json" | Invoke-Expression
 ```
 ## Importing Necessary Modules
 This section imports essential modules for enhancing your PowerShell experience. These modules enable fuzzy searching, terminal icons, Windows update management, and improved shell functionalities.
@@ -39,21 +38,26 @@ This section imports essential modules for enhancing your PowerShell experience.
 ```powershell
 Import-Module PSFzf
 Import-Module PSWindowsUpdate
-Import-Module PSColor
 Import-Module PSReadLine
 Set-PSReadLineOption -PredictionSource History
 Import-Module -Name Terminal-Icons
+Import-Module PSGitHub
 ```
 ##Theme Switching Functions
 The following functions allow you to switch themes dynamically using Oh My Posh with fuzzy search. The Set-PoshTheme function allows you to change themes, and Choose-PoshTheme lets you select a theme interactively.
+
+
+
+
 ```powershell
+## Choose-PoshTheme Function
+This function allows you to select a theme from a list using fuzzy search. The fzf utility helps you interactively choose a theme.
 function Set-PoshTheme {
     param (
         [Parameter(Mandatory)]
         [string]$Theme
     )
-
-    $themePath = "C:\Users\Amr khaled\AppData\Local\Programs\oh-my-posh\themes\$Theme.omp.json"
+    $themePath = "C:\Users\$env:USERNAME\AppData\Local\Programs\oh-my-posh\themes\$Theme.omp.json"
     if (Test-Path $themePath) {
         oh-my-posh init pwsh --config $themePath | Invoke-Expression
         Write-Host "Switched to theme: $Theme" -ForegroundColor Green
@@ -62,9 +66,27 @@ function Set-PoshTheme {
     }
 }
 
-```
-## Choose-PoshTheme Function
-This function allows you to select a theme from a list using fuzzy search. The fzf utility helps you interactively choose a theme.
+function Choose-PoshTheme {
+    $themes = @(
+        "jandedobbeleer", "chips", "dracula", "if_tea", "sonicboom_dark", "atomic", "blue-owl", "bubbles", 
+        "devious-diamonds", "cloud-native-azure", "mario", "powerline", "paradox", "pure", "snowy-night", 
+        "tango", "vscode", "powerline-v2", "crystal", "horizon", "sphinx", "old-skool", "seabird", "new-age", 
+        "macchiato", "react", "dracula-dark", "frodo", "night-owl", "1_shell", "agnoster.minimal", "agnoster", 
+        "agnosterplus", "aliens", "amro", "atomicBit", "avit", "blueish", "bubblesextra", "bubblesline", 
+        "capr4n", "catppuccin_frappe", "catppuccin_latte", "catppuccin_macchiato", "catppuccin_mocha", 
+        "catppuccin", "cert", "cinnamon", "clean-detailed", "cloud-context", "cobalt2", "craver", "darkblood", 
+        "di4am0nd", "easy-term", "emodipt-extend", "emodipt", "fish", "free-ukraine", "froczh", "gmay", 
+        "grandpa-style", "gruvbox", "half-life", "honukai", "hotstick.minimal", "hul10", "hunk", "huvix", 
+        "illusi0n", "iterm2", "jblab_2021", "jonnychipz", "json", "jtracey93", "jv_sitecorian", "kali", 
+        "kushal", "lambda", "lambdageneration", "larserikfinholt", "lightgreen", "M365Princess", "marcduiker", 
+        "markbull", "material", "microverse-power", "mojada"
+    )
+
+    Write-Host "Available Themes:" -ForegroundColor Cyan
+    $themes | fzf --preview 'echo {}' --preview-window=up:20 | ForEach-Object {
+        Set-PoshTheme -Theme $_
+    }
+}
 ```powershell
 function Choose-PoshTheme {
     $themes = @(
@@ -170,13 +192,20 @@ Here, we define several useful aliases to simplify and speed up common PowerShel
 
 ```powershell
 Set-Alias posh-theme Choose-PoshTheme
-Set-Alias tt tree
 Set-Alias gnip Get-NetIPAddress
 Set-Alias vim nvim
 Set-Alias alies Get-Alias
 Set-Alias edit notepad
 Set-Alias pscan Test-NetConnection  # Alias for testing network connections
-```
+Set-Alias publicip get-public-ip
+Set-Alias nmap-scan recon
+Set-Alias gh gethash
+Set-Alias payload msf-payload
+Set-Alias rasm run-asm
+Set-Alias rcpp run-cpp
+Set-Alias rjava run-java
+Set-Alias phps php-server
+Set-Alias lvim "C:\Users\$env:USERNAME\.local\bin\lvim.ps1"```
 ##Functions for Extended Functionality
 This section contains a set of custom functions for retrieving system information, managing network connections, exploring directories, and gathering various system metrics like CPU and memory usage.
 ```powershell
@@ -193,12 +222,20 @@ Function tree { Get-ChildItem -Recurse -Force | Format-Table FullName, Attribute
 Function listusers { Get-LocalUser }
 Function groups { Get-LocalGroupMember -Group "Administrators" }
 Function clsrv { Clear-DnsClientCache }
+require("lazy").setup({
+  {
+    "iamcco/markdown-preview.nvim",
+    run = "cd app && npm install",  -- Ensures Node.js dependencies are installed
+    ft = "markdown",  -- Only loads for markdown files
+  },
+})
 Function cpuinfo { Get-WmiObject Win32_Processor | Select-Object Name, NumberOfCores, MaxClockSpeed }
 Function raminfo { Get-WmiObject Win32_PhysicalMemory | Select-Object Manufacturer, Capacity, Speed }
 Function sysinfo { Get-ComputerInfo | Select-Object CsName, WindowsVersion, OsArchitecture, CsManufacturer, CsModel }
 ```
 ##Search and Fuzzy Search Functions
 This section introduces fuzzy search capabilities using the fzf tool, which enables you to search through files, directories, and content interactively. The functions here allow for flexible and powerful searching.
+
 ```powershell
 function search {
     Get-ChildItem -Path C:\ -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | fzf
@@ -315,3 +352,5 @@ This section lists functions related to fuzzy searching files and directories.
 | `openfolder`     | `Start-Process explorer`             | Open selected folder in File Explorer                  | `openfolder` — Open a folder in File Explorer interactively.      |
 
 
+# note:
+The project is still under development and may change.
