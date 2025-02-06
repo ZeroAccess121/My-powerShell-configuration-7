@@ -15,6 +15,9 @@ oh-my-posh init pwsh --config "C:\Users\$env:USERNAME\AppData\Local\Programs\oh-
 # Simulate pressing F2 on terminal start
 $env:PATH += ";$env:USERPROFILE\.local\bin"
 
+
+
+
 # Import functionality
 Import-Module PSFzf
 Import-Module PSWindowsUpdate
