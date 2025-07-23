@@ -738,7 +738,7 @@ function hack-server {
 }
 
 function my-hack-server {
-    ssh -o "SetEnv SECRET=FksPpsOTJseCOrZBPWmRpQRz" root@lsd.segfault.net
+    ssh -o "SetEnv SECRET=yoursecret" root@lsd.segfault.net
 }
 
 # ----------------------------------------------
